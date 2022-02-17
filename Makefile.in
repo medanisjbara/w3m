@@ -109,9 +109,9 @@ HELPER=w3mhelperpanel$(EXT)
 INFLATE=inflate$(EXT)
 IMGDISPLAY=w3mimgdisplay$(EXT)
 MAN1_TARGET=$(PACKAGE).1
-MAN1=$(top_srcdir)/doc/w3m.1
-MAN1_JA=$(top_srcdir)/doc-jp/w3m.1
-MAN1_DE=$(top_srcdir)/doc-de/w3m.1
+MAN1=$(top_srcdir)/doc/doc-assets/en/w3m.1
+MAN1_JA=$(top_srcdir)/doc/doc-assets/ja/w3m.1
+MAN1_DE=$(top_srcdir)/doc/doc-assets/de/w3m.1
 
 LIB_TARGETS=$(BOOKMARKER) $(HELPER)
 AUXBIN_TARGETS=@AUXBIN_TARGETS@
@@ -325,5 +325,5 @@ dist:
 	git archive --format=tar --prefix=w3m-$(VERSION)/ HEAD | xz -9e > ../w3m-$(VERSION).tar.xz
 
 bindist:
-	cd ..; tar cvfz w3m-$(VERSION)-$(MODEL).tar.gz w3m/w3m* w3m/doc* w3m/Bonus* w3m/README w3m/scripts 
+	cd ..; tar cvfz w3m-$(VERSION)-$(MODEL).tar.gz w3m/w3m* w3m/doc/doc-assets/en* w3m/Bonus* w3m/README.old w3m/scripts 
 

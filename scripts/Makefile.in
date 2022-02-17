@@ -48,19 +48,19 @@ PERL		= @PERL@
 
 all: $(LIB_TARGETS) $(AUXBIN_TARGETS) $(HELP_TARGETS) $(SUBDIRS)
 
-w3mhelp-funcname.pl: w3mhelp-funcname.pl.in ../funcname.tab $(top_srcdir)/doc/keymap.default $(top_srcdir)/doc/keymap.lynx
+w3mhelp-funcname.pl: w3mhelp-funcname.pl.in ../funcname.tab $(top_srcdir)/doc/doc-assets/en/keymap.default $(top_srcdir)/doc/doc-assets/en/keymap.lynx
 	@echo "generating w3mhelp-funcname.pl..."
 	@echo '%funcname = (' > w3mhelp-funcname.pl
 	@sed -ne "/^[a-zA-Z@]/s/\([a-zA-Z@][a-zA-Z0-9@_]*\)[ 	][ 	]*\([^ 	]*\)/'\1', '\2',/p" < ../funcname.tab >> w3mhelp-funcname.pl
 	@echo ');' >> w3mhelp-funcname.pl
 	@echo '%keyfunc = (' >> w3mhelp-funcname.pl
 	@case "$(KEYBIND_SRC)" in *lynx*) keymap=keymap.lynx;; *) keymap=keymap.default;; esac; \
-	sed -ne "/^keymap/s/^keymap[ 	][ 	]*\([^ 	]*\)[ 	][ 	]*\([a-zA-Z@][a-zA-Z0-9@_]*\)/'\1', '\2', /p" < $(top_srcdir)/doc/$$keymap >> w3mhelp-funcname.pl
+	sed -ne "/^keymap/s/^keymap[ 	][ 	]*\([^ 	]*\)[ 	][ 	]*\([a-zA-Z@][a-zA-Z0-9@_]*\)/'\1', '\2', /p" < $(top_srcdir)/doc/doc-assets/en/$$keymap >> w3mhelp-funcname.pl
 	@echo ');' >> w3mhelp-funcname.pl
 	@cat $(srcdir)/w3mhelp-funcname.pl.in >> w3mhelp-funcname.pl
 	@echo "done"
 
-w3mhelp-funcdesc-stamp: $(top_srcdir)/doc/README.func $(top_srcdir)/doc-jp/README.func $(top_srcdir)/doc-de/README.func w3mhelp-funcdesc.en.pl.in w3mhelp-funcdesc.ja.pl.in w3mhelp-funcdesc.de.pl.in
+w3mhelp-funcdesc-stamp: $(top_srcdir)/doc/doc-assets/en/README.func $(top_srcdir)/doc/doc-assets/jp/README.func $(top_srcdir)/doc/doc-assets/de/README.func w3mhelp-funcdesc.en.pl.in w3mhelp-funcdesc.ja.pl.in w3mhelp-funcdesc.de.pl.in
 	@echo "generating w3mhelp-funcdesc*.pl..."
 	@for dirlang in $(DOCDIRS); do \
 	  dir=`expr "$$dirlang" : "\(.*\):.*"`; \
