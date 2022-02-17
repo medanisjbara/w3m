@@ -1,5 +1,11 @@
 ## What is this fork for ?
 
+### W3M
+from the man page
+> w3m - a text based web browser and pager
+
+This is a fork of the w3m text based browser/pager that aims to achieve a couple of things listed below.
+
 ### In short term
 This is an attempt to document the w3m pager/browser and make the codebase easier to understand and contribute to. This fork will only add to the [doc](/doc) folder for now, But as time passes It will contain more additional development documentation and hopefully when the time comes it will have some actual code changes.
 ### In long term
