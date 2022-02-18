@@ -12,6 +12,9 @@ Comming soon.
 * [CLI Usage message](#usage)
 * [BLFS Chapter 18](https://www.linuxfromscratch.org/blfs/view/8.2/basicnet/w3m.html)
 
+## Users tips and tricks.
+* http://physino.xyz/learning/w3m/
+
 ## Other related sources that might be useful
 * [Mailing list archive](https://www.mail-archive.com/w3m-dev-en@sic.med.tohoku.ac.jp/)
 * [Debian package page](https://packages.debian.org/sid/w3m)
