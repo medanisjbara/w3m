@@ -1,5 +1,14 @@
 # W3m Developer Manual
 
+## Content
+1. [Introduction](#introduction)
+2. [Motives](#motives)
+3. [Installation](#installation)
+4. [Summary of the codebase](#summary-of-the-codebase)
+5. [Other documentation:](#other-documentation:)
+6. [Useful Sources](#useful-sources)
+
+
 ## Introduction
 This document is the result of personal attempts to read the code and understand it. It will get updated everytime I learn something new.
 Note that English is not my first language, nor my second. So if you find any mistakes in this document, please point me to it.
@@ -10,20 +19,26 @@ Since I (the person writing this document) am a newbie in programming with the C
 
 I'm not sure if it's okay to add such document to the repository. But I may move it to a blog in the future.
 
-## Why
+**This document is a work in progress.**
+
+## Motives
 On the [Old README file](/doc/doc-old/doc-en/README) they pointed out in the *Current problems are* section that their online manuals are poor.
 The online documents generally lack information, especially for developers who wants to contribute or use the project, these online documents that you'll find if you google w3m and look at every page generally contain information about general usage and the installation method. Those will be mentioned briefly here. But this document is meant for developers that wants to integrate their work with w3m.
 
 ## Installation
 I'm yet do update [`README.md`](/README.md) to give installation instuctions.
 
-## General notes on the code
+## Summary of the codebase
+This section is the result of the direct reading of the code, file by file and function by function and line by line. This section will probably change a lot and may even be removed when better documentation build on it will be written.
+Consider this section as just notes from someone reading the code.
+
+### General notes on the code
 This project is both simple and complicated at the same time. Therefore, my strategy is to read the codebase file by file and devide and reformat the code in each file into sections that I will address each one here before writing it's proper documentation (if necessary). Note that no actual changes to the code or it's functionalities will be made. Since this is just a strategy to study, understand and document the project.
 
-## main.c
+### main.c
 The [`main.c`](/main.c) file will be reformated slightly and comments will be added to it on [my fork of the repository](https://github.com/medanisjbara/w3m) without making changes to the code functionality.
 
-### A list of headers and libraries used:
+#### A list of headers and libraries used:
 * `stdio.h`		:	Standard input/output
 * `signal.h`	:	Signal handling
 * `setjmp.h`	:	non-local jumps from functions
@@ -37,8 +52,11 @@ The [`main.c`](/main.c) file will be reformated slightly and comments will be ad
 * `gpm.h`		:	General purpose mouse
 * `winsock.h`	:	Windows sockets
 
-### Notes:
+#### C functions present in main.c
+This will be an overview of the functions and a brief description of what they do
+* `fversion` writes the version and some other information to a file, the file in this context is ether `stdout` or `stderr`. the information written by this function
 
+#### Notes:
 The `main.c` file (and other files) contain a check for defined constants such as `DONT_CALL_GC_AFTER_FORK` and acts differently accordingly. It uses this constant and another constant named `USE_IMAGE` which if they're defined, these sections of code will be activated
 ```C
 ...
@@ -81,6 +99,8 @@ The `main.c` file (and other files) contain a check for defined constants such a
 ```
 Obviously by the name of the variables and by reading the code as it is, you can tell that the code was made with extensibility in mind. Since the software will use a different name if given to it.
 
+## Other documentation:
+Have a look at our [Related Sources](/doc/related-sources.md) document. It contains a list of sources to potentially useful documentation online about the project.
 
 ## Useful Sources
 http://lxr.yanyahua.com/ident/make?_i=HAVE_WAITPID
