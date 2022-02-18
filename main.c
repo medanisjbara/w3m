@@ -65,6 +65,7 @@ Hist *URLHist;
 Hist *ShellHist;
 Hist *TextHist;
 
+
 typedef struct _Event {
     int cmd;
     void *data;
@@ -72,6 +73,7 @@ typedef struct _Event {
 } Event;
 static Event *CurrentEvent = NULL;
 static Event *LastEvent = NULL;
+
 
 #ifdef USE_ALARM
 	static AlarmEvent DefaultAlarm = {
@@ -361,9 +363,7 @@ static void wrap_GC_warn_proc(char *msg, GC_word arg){
 }
 
 #ifdef SIGCHLD
-static void
-sig_chld(int signo)
-{
+static void sig_chld(int signo){
     int p_stat;
     pid_t pid;
 
@@ -391,9 +391,7 @@ sig_chld(int signo)
 }
 #endif
 
-Str
-make_optional_header_string(char *s)
-{
+Str make_optional_header_string(char *s){
     char *p;
     Str hs;
 
@@ -417,8 +415,7 @@ make_optional_header_string(char *s)
     return hs;
 }
 
-static void *die_oom(size_t bytes)
-{
+static void *die_oom(size_t bytes){
     fprintf(stderr, "Out of memory: %lu bytes unavailable!\n", (unsigned long)bytes);
     exit(1);
 }
@@ -1301,16 +1298,12 @@ int main(int argc, char **argv, char **envp){
     }
 }
 
-static void
-keyPressEventProc(int c)
-{
+static void keyPressEventProc(int c){
     CurrentKey = c;
     w3mFuncList[(int)GlobalKeymap[c]].func();
 }
 
-void
-pushEvent(int cmd, void *data)
-{
+void pushEvent(int cmd, void *data){
     Event *event;
 
     event = New(Event);
@@ -1324,9 +1317,7 @@ pushEvent(int cmd, void *data)
     LastEvent = event;
 }
 
-static void
-dump_source(Buffer *buf)
-{
+static void dump_source(Buffer *buf){
     FILE *f;
     int c;
     if (buf->sourcefile == NULL)
@@ -1340,9 +1331,7 @@ dump_source(Buffer *buf)
     fclose(f);
 }
 
-static void
-dump_head(Buffer *buf)
-{
+static void dump_head(Buffer *buf){
     TextListItem *ti;
 
     if (buf->document_header == NULL) {
@@ -1362,9 +1351,7 @@ dump_head(Buffer *buf)
     puts("");
 }
 
-static void
-dump_extra(Buffer *buf)
-{
+static void dump_extra(Buffer *buf){
     printf("W3m-current-url: %s\n", parsedURL2Str(&buf->currentURL)->ptr);
     if (buf->baseURL)
 	printf("W3m-base-url: %s\n", parsedURL2Str(buf->baseURL)->ptr);
@@ -1391,15 +1378,11 @@ dump_extra(Buffer *buf)
 #endif
 }
 
-static int
-cmp_anchor_hseq(const void *a, const void *b)
-{
+static int cmp_anchor_hseq(const void *a, const void *b){
     return (*((const Anchor **) a))->hseq - (*((const Anchor **) b))->hseq;
 }
 
-static void
-do_dump(Buffer *buf)
-{
+static void do_dump(Buffer *buf) {
     MySignalHandler(*volatile prevtrap) (SIGNAL_ARG) = NULL;
 
     prevtrap = mySignal(SIGINT, intTrap);
@@ -1447,15 +1430,12 @@ DEFUN(pcmap, PCMAP, "pcmap")
     w3mFuncList[(int)PcKeymap[(int)getch()]].func();
 }
 #else				/* not __EMX__ */
-void
-pcmap(void)
-{
+void pcmap(void){
+	/* Does Nothing*/
 }
 #endif
 
-static void
-escKeyProc(int c, int esc, unsigned char *map)
-{
+static void escKeyProc(int c, int esc, unsigned char *map){
     if (CurrentKey >= 0 && CurrentKey & K_MULTI) {
 	unsigned char **mmap;
 	mmap = (unsigned char **)getKeyData(MULTI_KEY(CurrentKey));
@@ -1501,9 +1481,7 @@ DEFUN(escbmap, ESCBMAP, "ESC [ map")
 	escKeyProc((int)c, K_ESCB, EscBKeymap);
 }
 
-void
-escdmap(char c)
-{
+void escdmap(char c) {
     int d;
     d = (int)c - (int)'0';
     c = getch();
@@ -1525,9 +1503,7 @@ DEFUN(multimap, MULTIMAP, "multimap")
     }
 }
 
-void
-tmpClearBuffer(Buffer *buf)
-{
+void tmpClearBuffer(Buffer *buf){
     if (buf->pagerSource == NULL && writeBufferCache(buf) == 0) {
 	buf->firstLine = NULL;
 	buf->topLine = NULL;
@@ -1539,9 +1515,7 @@ tmpClearBuffer(Buffer *buf)
 static Str currentURL(void);
 
 #ifdef USE_BUFINFO
-void
-saveBufferInfo()
-{
+void saveBufferInfo(){
     FILE *fp;
 
     if (w3m_dump)
@@ -1554,9 +1528,7 @@ saveBufferInfo()
 }
 #endif
 
-static void
-pushBuffer(Buffer *buf)
-{
+static void pushBuffer(Buffer *buf) {
     Buffer *b;
 
 #ifdef USE_IMAGE
@@ -1579,9 +1551,7 @@ pushBuffer(Buffer *buf)
 
 }
 
-static void
-delBuffer(Buffer *buf)
-{
+static void delBuffer(Buffer *buf) {
     if (buf == NULL)
 	return;
     if (Currentbuf == buf)
@@ -1591,33 +1561,27 @@ delBuffer(Buffer *buf)
 	Currentbuf = Firstbuf;
 }
 
-static void
-repBuffer(Buffer *oldbuf, Buffer *buf)
+static void repBuffer(Buffer *oldbuf, Buffer *buf)
 {
     Firstbuf = replaceBuffer(Firstbuf, oldbuf, buf);
     Currentbuf = buf;
 }
 
 
-MySignalHandler
-intTrap(SIGNAL_ARG)
-{				/* Interrupt catcher */
+MySignalHandler intTrap(SIGNAL_ARG){
+	/* Interrupt catcher */
     LONGJMP(IntReturn, 0);
     SIGNAL_RETURN;
 }
 
 #ifdef SIGWINCH
-static MySignalHandler
-resize_hook(SIGNAL_ARG)
-{
+static MySignalHandler resize_hook(SIGNAL_ARG){
     need_resize_screen = TRUE;
     mySignal(SIGWINCH, resize_hook);
     SIGNAL_RETURN;
 }
 
-static void
-resize_screen(void)
-{
+static void resize_screen(void) {
     need_resize_screen = FALSE;
     setlinescols();
     setupscreen();
@@ -1627,9 +1591,7 @@ resize_screen(void)
 #endif				/* SIGWINCH */
 
 #ifdef SIGPIPE
-static MySignalHandler
-SigPipe(SIGNAL_ARG)
-{
+static MySignalHandler SigPipe(SIGNAL_ARG){
 #ifdef USE_MIGEMO
     init_migemo();
 #endif
@@ -1642,9 +1604,7 @@ SigPipe(SIGNAL_ARG)
  * Command functions: These functions are called with a keystroke.
  */
 
-static void
-nscroll(int n, int mode)
-{
+static void nscroll(int n, int mode) {
     Buffer *buf = Currentbuf;
     Line *top = buf->topLine, *cur = buf->currentLine;
     int lnum, tlnum, llnum, diff_n;
@@ -1784,8 +1744,7 @@ DEFUN(rdrwSc, REDRAW, "Draw the screen anew")
     displayBuffer(Currentbuf, B_FORCE_REDRAW);
 }
 
-static void
-clear_mark(Line *l)
+static void clear_mark(Line *l)
 {
     int pos;
     if (!l)
@@ -1795,8 +1754,7 @@ clear_mark(Line *l)
 }
 
 /* search by regular expression */
-static int
-srchcore(char *volatile str, int (*func) (Buffer *, char *))
+static int srchcore(char *volatile str, int (*func) (Buffer *, char *))
 {
     MySignalHandler(*prevtrap) ();
     volatile int i, result = SR_NOTFOUND;
@@ -1821,8 +1779,7 @@ srchcore(char *volatile str, int (*func) (Buffer *, char *))
     return result;
 }
 
-static void
-disp_srchresult(int result, char *prompt, char *str)
+static void disp_srchresult(int result, char *prompt, char *str)
 {
     if (str == NULL)
 	str = "";
@@ -1834,8 +1791,7 @@ disp_srchresult(int result, char *prompt, char *str)
 	disp_message(Sprintf("%s%s", prompt, str)->ptr, TRUE);
 }
 
-static int
-dispincsrch(int ch, Str buf, Lineprop *prop)
+static int dispincsrch(int ch, Str buf, Lineprop *prop)
 {
     static Buffer sbuf;
     static Line *currentLine;
@@ -1912,8 +1868,7 @@ dispincsrch(int ch, Str buf, Lineprop *prop)
     return -1;
 }
 
-void
-isrch(int (*func) (Buffer *, char *), char *prompt)
+void isrch(int (*func) (Buffer *, char *), char *prompt)
 {
     char *str;
     Buffer sbuf;
@@ -1928,8 +1883,7 @@ isrch(int (*func) (Buffer *, char *), char *prompt)
     displayBuffer(Currentbuf, B_FORCE_REDRAW);
 }
 
-void
-srch(int (*func) (Buffer *, char *), char *prompt)
+void srch(int (*func) (Buffer *, char *), char *prompt)
 {
     char *str;
     int result;
@@ -1985,8 +1939,7 @@ DEFUN(isrchbak, ISEARCH_BACK, "Incremental search backward")
     isrch(backwardSearch, "I-search backward: ");
 }
 
-static void
-srch_nxtprv(int reverse)
+static void srch_nxtprv(int reverse)
 {
     int result;
     /* *INDENT-OFF* */
@@ -2030,8 +1983,7 @@ DEFUN(srchprv, SEARCH_PREV, "Continue search backward")
     srch_nxtprv(1);
 }
 
-static void
-shiftvisualpos(Buffer *buf, int shift)
+static void shiftvisualpos(Buffer *buf, int shift)
 {
     Line *l = buf->currentLine;
     buf->visualpos -= shift;
@@ -2305,8 +2257,7 @@ DEFUN(ldhelp, HELP, "Show help panel")
 #endif
 }
 
-static void
-cmd_loadfile(char *fn)
+static void cmd_loadfile(char *fn)
 {
     Buffer *buf;
 
@@ -2325,8 +2276,7 @@ cmd_loadfile(char *fn)
 }
 
 /* Move cursor left */
-static void
-_movL(int n)
+static voidc _movL(int n)
 {
     int i, m = searchKeyNum();
     if (Currentbuf->firstLine == NULL)
@@ -2347,8 +2297,7 @@ DEFUN(movL1, MOVE_LEFT1, "Cursor left. With edge touched, slide")
 }
 
 /* Move cursor downward */
-static void
-_movD(int n)
+static void _movD(int n)
 {
     int i, m = searchKeyNum();
     if (Currentbuf->firstLine == NULL)
@@ -2369,8 +2318,7 @@ DEFUN(movD1, MOVE_DOWN1, "Cursor down. With edge touched, slide")
 }
 
 /* move cursor upward */
-static void
-_movU(int n)
+static void _movU(int n)
 {
     int i, m = searchKeyNum();
     if (Currentbuf->firstLine == NULL)
@@ -2391,8 +2339,7 @@ DEFUN(movU1, MOVE_UP1, "Cursor up. With edge touched, slide")
 }
 
 /* Move cursor right */
-static void
-_movR(int n)
+static void _movR(int n)
 {
     int i, m = searchKeyNum();
     if (Currentbuf->firstLine == NULL)
@@ -2421,14 +2368,12 @@ DEFUN(movR1, MOVE_RIGHT1, "Cursor right. With edge touched, slide")
 #define nextChar(s, l)	do { (s)++; } while ((s) < (l)->len && (l)->propBuf[s] & PC_WCHAR2)
 #define prevChar(s, l)	do { (s)--; } while ((s) > 0 && (l)->propBuf[s] & PC_WCHAR2)
 
-static wc_uint32
-getChar(char *p)
+static wc_uint32 getChar(char *p)
 {
     return wc_any_to_ucs(wtf_parse1((wc_uchar **)&p));
 }
 
-static int
-is_wordchar(wc_uint32 c)
+static int is_wordchar(wc_uint32 c)
 {
     return wc_is_ucs_alnum(c);
 }
@@ -2437,15 +2382,13 @@ is_wordchar(wc_uint32 c)
 #define prevChar(s, l)	(s)--
 #define getChar(p)	((int)*(p))
 
-static int
-is_wordchar(int c)
+static int is_wordchar(int c)
 {
     return IS_ALNUM(c);
 }
 #endif
 
-static int
-prev_nonnull_line(Line *line)
+static int prev_nonnull_line(Line *line)
 {
     Line *l;
 
@@ -2511,8 +2454,7 @@ DEFUN(movLW, PREV_WORD, "Move to the previous word")
     displayBuffer(Currentbuf, B_NORMAL);
 }
 
-static int
-next_nonnull_line(Line *line)
+static int next_nonnull_line(Line *line)
 {
     Line *l;
 
@@ -2571,8 +2513,7 @@ DEFUN(movRW, NEXT_WORD, "Move to the next word")
     displayBuffer(Currentbuf, B_NORMAL);
 }
 
-static void
-_quitfm(int confirm)
+static void _quitfm(int confirm)
 {
     char *ans = "y";
 
@@ -2697,8 +2638,7 @@ DEFUN(susp, INTERRUPT SUSPEND, "Suspend w3m to background")
 }
 
 /* Go to specified line */
-static void
-_goLine(char *l)
+static void _goLine(char *l)
 {
     if (l == NULL || *l == '\0' || Currentbuf->currentLine == NULL) {
 	displayBuffer(Currentbuf, B_FORCE_REDRAW);
@@ -2772,8 +2712,7 @@ DEFUN(linend, LINE_END, "Go to the end of the line")
     displayBuffer(Currentbuf, B_NORMAL);
 }
 
-static int
-cur_real_linenumber(Buffer *buf)
+static int cur_real_linenumber(Buffer *buf)
 {
     Line *l, *cur = buf->currentLine;
     int n;
@@ -2961,8 +2900,7 @@ DEFUN(reMark, REG_MARK, "Mark all occurences of a pattern")
 }
 #endif				/* USE_MARK */
 
-static Buffer *
-loadNormalBuf(Buffer *buf, int renderframe)
+static Buffer *loadNormalBuf(Buffer *buf, int renderframe)
 {
     pushBuffer(buf);
     if (renderframe && RenderFrame && Currentbuf->frameset != NULL)
@@ -2970,8 +2908,7 @@ loadNormalBuf(Buffer *buf, int renderframe)
     return buf;
 }
 
-static Buffer *
-loadLink(char *url, char *target, char *referer, FormList *request)
+static Buffer *loadLink(char *url, char *target, char *referer, FormList *request)
 {
     Buffer *buf, *nfbuf;
     union frameset_element *f_element = NULL;
@@ -3066,8 +3003,7 @@ loadLink(char *url, char *target, char *referer, FormList *request)
     return buf;
 }
 
-static void
-gotoLabel(char *label)
+static void gotoLabel(char *label)
 {
     Buffer *buf;
     Anchor *al;
@@ -3099,8 +3035,7 @@ gotoLabel(char *label)
     return;
 }
 
-static int
-handleMailto(char *url)
+static int handleMailto(char *url)
 {
     Str to;
     char *pos;
@@ -3217,8 +3152,7 @@ DEFUN(followA, GOTO_LINK, "Follow current hyperlink in a new buffer")
 }
 
 /* follow HREF link in the buffer */
-void
-bufferA(void)
+void bufferA(void)
 {
     on_target = FALSE;
     followA();
@@ -3252,8 +3186,7 @@ DEFUN(followI, VIEW_IMAGE, "Display image in viewer")
     displayBuffer(Currentbuf, B_NORMAL);
 }
 
-static FormItemList *
-save_submit_formlist(FormItemList *src)
+static FormItemList * save_submit_formlist(FormItemList *src)
 {
     FormList *list;
     FormList *srclist;
@@ -3332,8 +3265,7 @@ save_submit_formlist(FormItemList *src)
 }
 
 #ifdef USE_M17N
-static Str
-conv_form_encoding(Str val, FormItemList *fi, Buffer *buf)
+static Str conv_form_encoding(Str val, FormItemList *fi, Buffer *buf)
 {
     wc_ces charset = SystemCharset;
 
@@ -3347,8 +3279,7 @@ conv_form_encoding(Str val, FormItemList *fi, Buffer *buf)
 #define conv_form_encoding(val, fi, buf) (val)
 #endif
 
-static void
-query_from_followform(Str *query, FormItemList *fi, int multipart)
+static void query_from_followform(Str *query, FormItemList *fi, int multipart)
 {
     FormItemList *f2;
     FILE *body = NULL;
@@ -3473,14 +3404,12 @@ DEFUN(submitForm, SUBMIT, "Submit form")
 }
 
 /* process form */
-void
-followForm(void)
+void followForm(void)
 {
     _followForm(FALSE);
 }
 
-static void
-_followForm(int submit)
+static void _followForm(int submit)
 {
     Anchor *a, *a2;
     char *p;
@@ -3790,8 +3719,7 @@ DEFUN(prevVA, PREV_VISITED, "Move to the previous visited hyperlink")
 }
 
 /* go to the next [visited] anchor */
-static void
-_nextA(int visited)
+static void _nextA(int visited)
 {
     HmarkerList *hl = Currentbuf->hmarklist;
     BufferPoint *po;
@@ -3874,8 +3802,7 @@ _nextA(int visited)
 }
 
 /* go to the previous anchor */
-static void
-_prevA(int visited)
+static void _prevA(int visited)
 {
     HmarkerList *hl = Currentbuf->hmarklist;
     BufferPoint *po;
@@ -3958,8 +3885,7 @@ _prevA(int visited)
 }
 
 /* go to the next left/right anchor */
-static void
-nextX(int d, int dy)
+static void nextX(int d, int dy)
 {
     HmarkerList *hl = Currentbuf->hmarklist;
     Anchor *an, *pan;
@@ -4014,8 +3940,7 @@ nextX(int d, int dy)
 }
 
 /* go to the next downward/upward anchor */
-static void
-nextY(int d)
+static void nextY(int d)
 {
     HmarkerList *hl = Currentbuf->hmarklist;
     Anchor *an, *pan;
@@ -4131,8 +4056,7 @@ DEFUN(prevBf, PREV, "Switch to the previous buffer")
     displayBuffer(Currentbuf, B_FORCE_REDRAW);
 }
 
-static int
-checkBackBuffer(Buffer *buf)
+static int checkBackBuffer(Buffer *buf)
 {
     Buffer *fbuf = buf->linkBuffer[LB_N_FRAME];
 
@@ -4212,8 +4136,7 @@ DEFUN(deletePrevBuf, DELETE_PREVBUF, "Delete previous buffer (mainly for local C
 	delBuffer(buf);
 }
 
-static void
-cmd_loadURL(char *url, ParsedURL *current, char *referer, FormList *request)
+static void cmd_loadURL(char *url, ParsedURL *current, char *referer, FormList *request)
 {
     Buffer *buf;
 
@@ -4245,8 +4168,7 @@ cmd_loadURL(char *url, ParsedURL *current, char *referer, FormList *request)
 
 
 /* go to specified URL */
-static void
-goURL0(char *prompt, int relative)
+static void goURL0(char *prompt, int relative)
 {
     char *url, *referer;
     ParsedURL p_url, *current;
@@ -4339,8 +4261,7 @@ DEFUN(gorURL, GOTO_RELATIVE, "Go to relative address")
     goURL0("Goto relative URL: ", TRUE);
 }
 
-static void
-cmd_loadBuffer(Buffer *buf, int prop, int linkid)
+static void cmd_loadBuffer(Buffer *buf, int prop, int linkid)
 {
     if (buf == NULL) {
 	disp_err_message("Can't load string", FALSE);
@@ -4446,8 +4367,7 @@ DEFUN(pginfo, INFO, "Display information about the current document")
     cmd_loadBuffer(buf, BP_NORMAL, LB_INFO);
 }
 
-void
-follow_map(struct parsed_tagarg *arg)
+void follow_map(struct parsed_tagarg *arg)
 {
     char *name = tag_get_value(arg, "link");
 #if defined(MENU_MAP) || defined(USE_IMAGE)
@@ -4516,8 +4436,7 @@ DEFUN(linkMn, LINK_MENU, "Pop up link element menu")
 		parsedURL2Str(&Currentbuf->currentURL)->ptr, NULL);
 }
 
-static void
-anchorMn(Anchor *(*menu_func) (Buffer *), int go)
+static void anchorMn(Anchor *(*menu_func) (Buffer *), int go)
 {
     Anchor *a;
     BufferPoint *po;
@@ -4675,8 +4594,7 @@ DEFUN(svSrc, DOWNLOAD SAVE, "Save document source")
     displayBuffer(Currentbuf, B_NORMAL);
 }
 
-static void
-_peekURL(int only_img)
+static void _peekURL(int only_img)
 {
 
     Anchor *a;
@@ -4747,8 +4665,7 @@ DEFUN(peekIMG, PEEK_IMG, "Show image address")
 }
 
 /* show current URL */
-static Str
-currentURL(void)
+static Str currentURL(void)
 {
     if (Currentbuf->bufferprop & BP_INTERNAL)
 	return Strnew_size(0);
@@ -5018,8 +4935,7 @@ DEFUN(reshape, RESHAPE, "Re-render document")
 }
 
 #ifdef USE_M17N
-static void
-_docCSet(wc_ces charset)
+static void _docCSet(wc_ces charset)
 {
     if (Currentbuf->bufferprop & BP_INTERNAL)
 	return;
@@ -5032,8 +4948,7 @@ _docCSet(wc_ces charset)
     displayBuffer(Currentbuf, B_FORCE_REDRAW);
 }
 
-void
-change_charset(struct parsed_tagarg *arg)
+void change_charset(struct parsed_tagarg *arg)
 {
     Buffer *buf = Currentbuf->linkBuffer[LB_N_INFO];
     wc_ces charset;
@@ -5088,8 +5003,7 @@ DEFUN(defCSet, DEFAULT_CHARSET, "Change the default character encoding")
 #endif
 
 /* mark URL-like patterns as anchors */
-void
-chkURLBuffer(Buffer *buf)
+void chkURLBuffer(Buffer *buf)
 {
     static char *url_like_pat[] = {
 	"https?://[a-zA-Z0-9][a-zA-Z0-9:%\\-\\./?=~_\\&+@#,\\$;]*[a-zA-Z0-9_/=\\-]",
@@ -5140,8 +5054,7 @@ DEFUN(chkWORD, MARK_WORD, "Turn current word into hyperlink")
 
 #ifdef USE_NNTP
 /* mark Message-ID-like patterns as NEWS anchors */
-void
-chkNMIDBuffer(Buffer *buf)
+void chkNMIDBuffer(Buffer *buf)
 {
     static char *url_like_pat[] = {
 	"<[!-;=?-~]+@[a-zA-Z0-9\\.\\-_]+>",
@@ -5195,8 +5108,7 @@ DEFUN(rFrame, FRAME, "Toggle rendering HTML frames")
 }
 
 /* spawn external browser */
-static void
-invoke_browser(char *url)
+static void invoke_browser(char *url)
 {
     Str cmd;
     char *browser = NULL;
@@ -5357,8 +5269,7 @@ DEFUN(stopI, STOP_IMAGE, "Stop loading and drawing of images")
 
 #ifdef USE_MOUSE
 
-static int
-mouse_scroll_line(void)
+static int mouse_scroll_line(void)
 {
     if (relative_wheel_scroll)
 	return (relative_wheel_scroll_ratio * LASTLINE + 99) / 100;
@@ -5366,8 +5277,7 @@ mouse_scroll_line(void)
 	return fixed_wheel_scroll_count;
 }
 
-static TabBuffer *
-posTab(int x, int y)
+static TabBuffer *posTab(int x, int y)
 {
     TabBuffer *tab;
 
@@ -5382,8 +5292,7 @@ posTab(int x, int y)
     return NULL;
 }
 
-static void
-do_mouse_action(int btn, int x, int y)
+static void do_mouse_action(int btn, int x, int y)
 {
     MouseActionMap *map = NULL;
     int ny = -1;
@@ -5471,8 +5380,7 @@ do_mouse_action(int btn, int x, int y)
     }
 }
 
-static void
-process_mouse(int btn, int x, int y)
+static void process_mouse(int btn, int x, int y)
 {
     int delta_x, delta_y, i;
     static int press_btn = MOUSE_BTN_RESET, press_x, press_y;
@@ -5677,8 +5585,7 @@ DEFUN(sgrmouse, SGRMOUSE, "SGR 1006 mouse operation")
 }
 
 #ifdef USE_GPM
-int
-gpm_process_mouse(Gpm_Event * event, void *data)
+int gpm_process_mouse(Gpm_Event * event, void *data)
 {
     int btn = MOUSE_BTN_RESET, x, y;
     if (event->type & GPM_UP)
@@ -5708,8 +5615,7 @@ gpm_process_mouse(Gpm_Event * event, void *data)
 #endif				/* USE_GPM */
 
 #ifdef USE_SYSMOUSE
-int
-sysm_process_mouse(int x, int y, int nbs, int obs)
+int sysm_process_mouse(int x, int y, int nbs, int obs)
 {
     int btn;
     int bits;
@@ -5814,8 +5720,7 @@ DEFUN(wrapToggle, WRAP_TOGGLE, "Toggle wrapping mode in searches")
     }
 }
 
-static char *
-getCurWord(Buffer *buf, int *spos, int *epos)
+static char *getCurWord(Buffer *buf, int *spos, int *epos)
 {
     char *p;
     Line *l = buf->currentLine;
@@ -5846,8 +5751,7 @@ getCurWord(Buffer *buf, int *spos, int *epos)
     return &p[b];
 }
 
-static char *
-GetWord(Buffer *buf)
+static char *GetWord(Buffer *buf)
 {
     int b, e;
     char *p;
@@ -5859,8 +5763,7 @@ GetWord(Buffer *buf)
 }
 
 #ifdef USE_DICT
-static void
-execdict(char *word)
+static void execdict(char *word)
 {
     char *w, *dictcmd;
     Buffer *buf;
@@ -5903,8 +5806,7 @@ DEFUN(dictwordat, DICT_WORD_AT,
 }
 #endif				/* USE_DICT */
 
-void
-set_buffer_environ(Buffer *buf)
+void set_buffer_environ(Buffer *buf)
 {
     static Buffer *prev_buf = NULL;
     static Line *prev_line = NULL;
@@ -5967,8 +5869,7 @@ set_buffer_environ(Buffer *buf)
     prev_pos = buf->pos;
 }
 
-char *
-searchKeyData(void)
+char *searchKeyData(void)
 {
     char *data = NULL;
 
@@ -5985,8 +5886,7 @@ searchKeyData(void)
     return allocStr(data, -1);
 }
 
-static int
-searchKeyNum(void)
+static int searchKeyNum(void)
 {
     char *d;
     int n = 1;
@@ -5999,8 +5899,7 @@ searchKeyNum(void)
 
 #ifdef __EMX__
 #ifdef USE_M17N
-static char *
-getCodePage(void)
+static char *getCodePage(void)
 {
     unsigned long CpList[8], CpSize;
 
@@ -6011,8 +5910,7 @@ getCodePage(void)
 #endif
 #endif
 
-void
-deleteFiles()
+void deleteFiles()
 {
     Buffer *buf;
     char *f;
@@ -6034,8 +5932,7 @@ deleteFiles()
     }
 }
 
-void
-w3m_exit(int i)
+void w3m_exit(int i)
 {
 #ifdef USE_MIGEMO
     init_migemo();		/* close pipe to migemo */
@@ -6106,8 +6003,7 @@ DEFUN(execCmd, COMMAND, "Invoke w3m function(s)")
 }
 
 #ifdef USE_ALARM
-static MySignalHandler
-SigAlarm(SIGNAL_ARG)
+static MySignalHandler SigAlarm(SIGNAL_ARG)
 {
     char *data;
 
@@ -6276,8 +6172,7 @@ DEFUN(defKey, DEFINE_KEY, "Define a binding between a key stroke combination and
     displayBuffer(Currentbuf, B_NORMAL);
 }
 
-TabBuffer *
-newTab(void)
+TabBuffer *newTab(void)
 {
     TabBuffer *n;
 
@@ -6290,8 +6185,7 @@ newTab(void)
     return n;
 }
 
-static void
-_newT(void)
+static void _newT(void)
 {
     TabBuffer *tag;
     Buffer *buf;
@@ -6326,8 +6220,7 @@ DEFUN(newT, NEW_TAB, "Open a new tab (with current document)")
     displayBuffer(Currentbuf, B_REDRAW_IMAGE);
 }
 
-static TabBuffer *
-numTab(int n)
+static TabBuffer *numTab(int n)
 {
     TabBuffer *tab;
     int i;
@@ -6342,8 +6235,7 @@ numTab(int n)
     return tab;
 }
 
-void
-calcTabPos(void)
+void calcTabPos(void)
 {
     TabBuffer *tab;
 #if 0
@@ -6399,8 +6291,7 @@ calcTabPos(void)
     }
 }
 
-TabBuffer *
-deleteTab(TabBuffer * tab)
+TabBuffer *deleteTab(TabBuffer * tab)
 {
     Buffer *buf, *next;
 
@@ -6476,8 +6367,7 @@ DEFUN(prevT, PREV_TAB, "Switch to the previous tab")
     displayBuffer(Currentbuf, B_REDRAW_IMAGE);
 }
 
-static void
-followTab(TabBuffer * tab)
+static void followTab(TabBuffer * tab)
 {
     Buffer *buf;
     Anchor *a;
@@ -6530,8 +6420,7 @@ DEFUN(tabA, TAB_LINK, "Follow current hyperlink in a new tab")
     followTab(prec_num ? numTab(PREC_NUM) : NULL);
 }
 
-static void
-tabURL0(TabBuffer * tab, char *prompt, int relative)
+static void tabURL0(TabBuffer * tab, char *prompt, int relative)
 {
     Buffer *buf;
 
@@ -6578,8 +6467,7 @@ DEFUN(tabrURL, TAB_GOTO_RELATIVE, "Open relative address in a new tab")
 	    "Goto relative URL on new tab: ", TRUE);
 }
 
-static void
-moveTab(TabBuffer * t, TabBuffer * t2, int right)
+static void moveTab(TabBuffer * t, TabBuffer * t2, int right)
 {
     if (t2 == NO_TABBUFFER)
 	t2 = FirstTab;
@@ -6637,8 +6525,7 @@ DEFUN(tabL, TAB_LEFT, "Move left along the tab bar")
     moveTab(CurrentTab, tab ? tab : FirstTab, FALSE);
 }
 
-void
-addDownloadList(pid_t pid, char *url, char *save, char *lock, clen_t size)
+void addDownloadList(pid_t pid, char *url, char *save, char *lock, clen_t size)
 {
     DownloadList *d;
 
@@ -6663,8 +6550,7 @@ addDownloadList(pid_t pid, char *url, char *save, char *lock, clen_t size)
     add_download_list = TRUE;
 }
 
-int
-checkDownloadList(void)
+int checkDownloadList(void)
 {
     DownloadList *d;
     struct stat st;
@@ -6678,8 +6564,7 @@ checkDownloadList(void)
     return FALSE;
 }
 
-static char *
-convert_size3(clen_t size)
+static char *convert_size3(clen_t size)
 {
     Str tmp = Strnew();
     int n;
@@ -6692,8 +6577,7 @@ convert_size3(clen_t size)
     return tmp->ptr;
 }
 
-static Buffer *
-DownloadListBuffer(void)
+static Buffer *DownloadListBuffer(void)
 {
     DownloadList *d;
     Str src = NULL;
@@ -6783,8 +6667,7 @@ DownloadListBuffer(void)
     return loadHTMLString(src);
 }
 
-void
-download_action(struct parsed_tagarg *arg)
+void download_action(struct parsed_tagarg *arg)
 {
     DownloadList *d;
     pid_t pid;
@@ -6818,9 +6701,7 @@ download_action(struct parsed_tagarg *arg)
     ldDL();
 }
 
-void
-stopDownload(void)
-{
+void stopDownload(void) {
     DownloadList *d;
 
     if (!FirstDL)
@@ -6887,9 +6768,7 @@ DEFUN(ldDL, DOWNLOAD_LIST, "Display downloads panel")
     displayBuffer(Currentbuf, B_FORCE_REDRAW);
 }
 
-static void
-save_buffer_position(Buffer *buf)
-{
+static void save_buffer_position(Buffer *buf){
     BufferPos *b = buf->undo;
 
     if (!buf->firstLine)
@@ -6911,9 +6790,7 @@ save_buffer_position(Buffer *buf)
     buf->undo = b;
 }
 
-static void
-resetPos(BufferPos * b)
-{
+static void resetPos(BufferPos * b){
     Buffer buf;
     Line top, cur;
 
