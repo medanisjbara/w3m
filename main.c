@@ -1,6 +1,11 @@
 /* $Id: main.c,v 1.270 2010/08/24 10:11:51 htrb Exp $ */
+
+// Never used constants defined.
 #define MAINPROGRAM
-#include "fm.h"
+#define DSTR_LEN	256
+
+/**************************** Includes and general defines *************************/
+/* Libraries */
 #include <stdio.h>
 #include <signal.h>
 #include <setjmp.h>
@@ -8,41 +13,52 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
-#if defined(HAVE_WAITPID) || defined(HAVE_WAIT3)
-#include <sys/wait.h>
-#endif
 #include <time.h>
-#if defined(__CYGWIN__) && defined(USE_BINMODE_STREAM)
-#include <io.h>
-#endif
+ 
+/* Header files */
+#include "fm.h"
 #include "terms.h"
 #include "myctype.h"
 #include "regex.h"
+
+/* Waiting mecanism */
+#if defined(HAVE_WAITPID) || defined(HAVE_WAIT3)
+	#include <sys/wait.h>
+#endif
+
+/* IO for CYGWIN */
+#if defined(__CYGWIN__) && defined(USE_BINMODE_STREAM)
+	#include <io.h>
+#endif
+
+
+/* M17N multilingual library */
 #ifdef USE_M17N
-#include "wc.h"
-#include "wtf.h"
-#ifdef USE_UNICODE
-#include "ucs.h"
+	#include "wc.h"
+	#include "wtf.h"
+	#ifdef USE_UNICODE
+		#include "ucs.h"
+	#endif
 #endif
-#endif
+
+/* Mouse implementation if  */
 #ifdef USE_MOUSE
-#ifdef USE_GPM
-#include <gpm.h>
-#endif				/* USE_GPM */
-#if defined(USE_GPM) || defined(USE_SYSMOUSE)
-extern int do_getch();
-#define getch()	do_getch()
-#endif				/* defined(USE_GPM) || defined(USE_SYSMOUSE) */
+	#ifdef USE_GPM
+		#include <gpm.h>
+	#endif				/* USE_GPM */
+	#if defined(USE_GPM) || defined(USE_SYSMOUSE)
+		extern int do_getch();
+		#define getch()	do_getch()
+	#endif				/* defined(USE_GPM) || defined(USE_SYSMOUSE) */
 #endif
 
+/* If compiled under microsoft windows MINGW */
 #ifdef __MINGW32_VERSION
-#include <winsock.h>
-
-WSADATA WSAData;
+	#include <winsock.h>
+	WSADATA WSAData;
 #endif
 
-#define DSTR_LEN	256
-
+// History variables
 Hist *LoadHist;
 Hist *SaveHist;
 Hist *URLHist;
@@ -58,39 +74,39 @@ static Event *CurrentEvent = NULL;
 static Event *LastEvent = NULL;
 
 #ifdef USE_ALARM
-static AlarmEvent DefaultAlarm = {
-    0, AL_UNSET, FUNCNAME_nulcmd, NULL
-};
-static AlarmEvent *CurrentAlarm = &DefaultAlarm;
-static MySignalHandler SigAlarm(SIGNAL_ARG);
+	static AlarmEvent DefaultAlarm = {
+	    0, AL_UNSET, FUNCNAME_nulcmd, NULL
+	};
+	static AlarmEvent *CurrentAlarm = &DefaultAlarm;
+	static MySignalHandler SigAlarm(SIGNAL_ARG);
 #endif
 
 #ifdef SIGWINCH
-static int need_resize_screen = FALSE;
-static MySignalHandler resize_hook(SIGNAL_ARG);
-static void resize_screen(void);
+	static int need_resize_screen = FALSE;
+	static MySignalHandler resize_hook(SIGNAL_ARG);
+	static void resize_screen(void);
 #endif
 
 #ifdef SIGPIPE
-static MySignalHandler SigPipe(SIGNAL_ARG);
+	static MySignalHandler SigPipe(SIGNAL_ARG);
 #endif
 
 #ifdef USE_MARK
-static char *MarkString = NULL;
+	static char *MarkString = NULL;
 #endif
+
 static char *SearchString = NULL;
 int (*searchRoutine) (Buffer *, char *);
 
 #ifndef __MINGW32_VERSION
-JMP_BUF IntReturn;
+	JMP_BUF IntReturn;
 #else
-_JBTYPE IntReturn[_JBLEN];
+	_JBTYPE IntReturn[_JBLEN];
 #endif /* __MINGW32_VERSION */
 
 static void delBuffer(Buffer *buf);
 static void cmd_loadfile(char *path);
-static void cmd_loadURL(char *url, ParsedURL *current, char *referer,
-			FormList *request);
+static void cmd_loadURL(char *url, ParsedURL *current, char *referer, FormList *request);
 static void cmd_loadBuffer(Buffer *buf, int prop, int linkid);
 static void keyPressEventProc(int c);
 int show_params_p = 0;
@@ -120,62 +136,77 @@ static int check_target = TRUE;
 #define PREC_LIMIT 10000
 static int searchKeyNum(void);
 
-#define help() fusage(stdout, 0)
-#define usage() fusage(stderr, 1)
+#define help() fusage(stdout, 0)	//output to stdout and return 0 using fusage
+#define usage() fusage(stderr, 1)	//output to stderr and return 1 using fusage
 
 int enable_inline_image;
 
-static void
-fversion(FILE * f)
-{
+
+
+
+/************************** Defining functions ******************************/
+
+// Optain info about the current installation
+static void fversion(FILE * f){
     fprintf(f, "w3m version %s, options %s\n", w3m_version,
 #if LANG == JA
 	    "lang=ja"
 #else
 	    "lang=en"
 #endif
+
 #ifdef USE_M17N
 	    ",m17n"
 #endif
+
 #ifdef USE_IMAGE
 	    ",image"
 #endif
+
 #ifdef USE_COLOR
 	    ",color"
-#ifdef USE_ANSI_COLOR
-	    ",ansi-color"
+	#ifdef USE_ANSI_COLOR
+		    ",ansi-color"
+	#endif
 #endif
-#endif
+
 #ifdef USE_MOUSE
 	    ",mouse"
-#ifdef USE_GPM
-	    ",gpm"
+	#ifdef USE_GPM
+		    ",gpm"
+	#endif
+	#ifdef USE_SYSMOUSE
+		    ",sysmouse"
+	#endif
 #endif
-#ifdef USE_SYSMOUSE
-	    ",sysmouse"
-#endif
-#endif
+
 #ifdef USE_MENU
 	    ",menu"
 #endif
+
 #ifdef USE_COOKIE
 	    ",cookie"
 #endif
+
 #ifdef USE_SSL
 	    ",ssl"
-#ifdef USE_SSL_VERIFY
-	    ",ssl-verify"
+	#ifdef USE_SSL_VERIFY
+		    ",ssl-verify"
+	#endif
 #endif
-#endif
+
 #ifdef USE_EXTERNAL_URI_LOADER
 	    ",external-uri-loader"
 #endif
+
 #ifdef USE_W3MMAILER
 	    ",w3mmailer"
 #endif
+
 #ifdef USE_NNTP
 	    ",nntp"
 #endif
+
 #ifdef USE_GOPHER
 	    ",gopher"
 #endif
@@ -194,9 +225,8 @@ fversion(FILE * f)
 	);
 }
 
-static void
-fusage(FILE * f, int err)
-{
+// Display the help message function
+static void fusage(FILE * f, int err){
     fversion(f);
     /* FIXME: gettextize? */
     fprintf(f, "usage: w3m [options] [URL or filename]\noptions:\n");
@@ -281,17 +311,15 @@ fusage(FILE * f, int err)
 }
 
 #ifdef USE_M17N
-#ifdef __EMX__
-static char *getCodePage(void);
-#endif
+	#ifdef __EMX__
+		static char *getCodePage(void);
+	#endif
 #endif
 
 static GC_warn_proc orig_GC_warn_proc = NULL;
 #define GC_WARN_KEEP_MAX (20)
 
-static void
-wrap_GC_warn_proc(char *msg, GC_word arg)
-{
+static void wrap_GC_warn_proc(char *msg, GC_word arg){
     if (fmInitialized) {
 	/* *INDENT-OFF* */
 	static struct {
@@ -389,16 +417,14 @@ make_optional_header_string(char *s)
     return hs;
 }
 
-static void *
-die_oom(size_t bytes)
+static void *die_oom(size_t bytes)
 {
     fprintf(stderr, "Out of memory: %lu bytes unavailable!\n", (unsigned long)bytes);
     exit(1);
 }
 
-int
-main(int argc, char **argv, char **envp)
-{
+// ******************************* THE MAIN FUNCTION ************************************** //
+int main(int argc, char **argv, char **envp){
     Buffer *newbuf = NULL;
     char *p;
     int c, i;
@@ -426,6 +452,10 @@ main(int argc, char **argv, char **envp)
 #endif /* defined(DONT_CALL_GC_AFTER_FORK) && defined(USE_IMAGE) */
     if (!getenv("GC_LARGE_ALLOC_WARN_INTERVAL"))
 	set_environ("GC_LARGE_ALLOC_WARN_INTERVAL", "30000");
+    /*
+    from libgc(1) man page:
+    > Fully portable code should call GC_INIT from the main program before making any other GC calls. On most platforms this does nothing and the collector is initialized on first use. On a few platforms explicit initialization is necessary. And it can never hurt.
+    */
     GC_INIT();
 #if (GC_VERSION_MAJOR>7) || ((GC_VERSION_MAJOR==7) && (GC_VERSION_MINOR>=2))
     GC_set_oom_fn(die_oom);
