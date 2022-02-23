@@ -50,6 +50,18 @@ cd w3m
 ./configure
 sudo make
 ```
+## Documentation
+Since this project is (for now) all about making documentation. If you think you can help, please have a look at the [W3m Developper Manual](doc/doc-dev/W3m-Developper-Manual.md) since it is the work in progress for now to understand and document the source code and how it works.
+
+## Tasks
+
+### Done
+
+* Split the documentation from the compilation assets related to doc
+
+### Todo
+
+* Document the main function and it's content so that a reader can understand what it's doing
 
 ## Notes
 * This project is still too small to even be even brought up to discussion with the developers of w3m. After enough future commits, We're hoping this project will become presentable so that new questions on what or why things do the way they do will be okay to ask. In the mean time, If you know anything about how this project works, or if you're willing to give some time and effort reading pieces of code and trying to make sense of it and write it down for us. Please contribute with a pull request containing whatever changes that suites you.
