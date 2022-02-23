@@ -5,7 +5,7 @@
 #define DSTR_LEN	256
 
 /**************************** Includes and general defines *************************/
-/* Libraries */
+/* Path headers */
 #include <stdio.h>
 #include <signal.h>
 #include <setjmp.h>
@@ -323,38 +323,38 @@ static GC_warn_proc orig_GC_warn_proc = NULL;
 
 static void wrap_GC_warn_proc(char *msg, GC_word arg){
     if (fmInitialized) {
-	/* *INDENT-OFF* */
-	static struct {
-	    char *msg;
-	    GC_word arg;
-	} msg_ring[GC_WARN_KEEP_MAX];
-	/* *INDENT-ON* */
-	static int i = 0;
-	static int n = 0;
-	static int lock = 0;
-	int j;
+		/* *INDENT-OFF* */
+		static struct {
+	    	char *msg;
+	    	GC_word arg;
+		} msg_ring[GC_WARN_KEEP_MAX];
+		/* *INDENT-ON* */
+		static int i = 0;
+		static int n = 0;
+		static int lock = 0;
+		int j;
 
-	j = (i + n) % (sizeof(msg_ring) / sizeof(msg_ring[0]));
-	msg_ring[j].msg = msg;
-	msg_ring[j].arg = arg;
+		j = (i + n) % (sizeof(msg_ring) / sizeof(msg_ring[0]));
+		msg_ring[j].msg = msg;
+		msg_ring[j].arg = arg;
 
-	if (n < sizeof(msg_ring) / sizeof(msg_ring[0]))
-	    ++n;
-	else
-	    ++i;
+		if (n < sizeof(msg_ring) / sizeof(msg_ring[0]))
+	    	++n;
+		else
+		    ++i;
 
-	if (!lock) {
-	    lock = 1;
+		if (!lock) {
+	    	lock = 1;
 
-	    for (; n > 0; --n, ++i) {
-		i %= sizeof(msg_ring) / sizeof(msg_ring[0]);
+	    	for (; n > 0; --n, ++i) {
+			i %= sizeof(msg_ring) / sizeof(msg_ring[0]);
 
-		printf(msg_ring[i].msg,	(unsigned long)msg_ring[i].arg);
-		sleep_till_anykey(1, 1);
-	    }
+			printf(msg_ring[i].msg,	(unsigned long)msg_ring[i].arg);
+			sleep_till_anykey(1, 1);
+	    	}
 
-	    lock = 0;
-	}
+	    	lock = 0;
+		}
     }
     else if (orig_GC_warn_proc)
 	orig_GC_warn_proc(msg, arg);
@@ -454,11 +454,18 @@ int main(int argc, char **argv, char **envp){
     > Fully portable code should call GC_INIT from the main program before making any other GC calls. On most platforms this does nothing and the collector is initialized on first use. On a few platforms explicit initialization is necessary. And it can never hurt.
     */
     GC_INIT();
+
+
+// Pull [#1](https://github.com/tats/w3m/pull/1) for gcc 7.1 and below  
 #if (GC_VERSION_MAJOR>7) || ((GC_VERSION_MAJOR==7) && (GC_VERSION_MINOR>=2))
-    GC_set_oom_fn(die_oom);
+    GC_set_oom_fn(die_oom); // For gcc 7.2 and higher
 #else
-    GC_oom_fn = die_oom;
+    GC_oom_fn = die_oom; 	// for gcc 7.1 and lower
 #endif
+// Pull [#1](https://github.com/tats/w3m/pull/1) for gcc 7.1 and below  
+
+
+
 #if defined(ENABLE_NLS) || (defined(USE_M17N) && defined(HAVE_LANGINFO_CODESET))
     setlocale(LC_ALL, "");
 #endif
@@ -5799,8 +5806,7 @@ DEFUN(dictword, DICT_WORD, "Execute dictionary command (see README.dict)")
     execdict(inputStr("(dictionary)!", ""));
 }
 
-DEFUN(dictwordat, DICT_WORD_AT,
-      "Execute dictionary command for word at cursor")
+DEFUN(dictwordat, DICT_WORD_AT, "Execute dictionary command for word at cursor")
 {
     execdict(GetWord(Currentbuf));
 }
