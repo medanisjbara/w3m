@@ -375,16 +375,16 @@ static void sig_chld(int signo){
     if ((pid = wait(&p_stat)) > 0)
 #endif
     {
-	DownloadList *d;
+		DownloadList *d;
 
-	if (WIFEXITED(p_stat)) {
-	    for (d = FirstDL; d != NULL; d = d->next) {
-		if (d->pid == pid) {
-		    d->err = WEXITSTATUS(p_stat);
-		    break;
+		if (WIFEXITED(p_stat)) {
+	    	for (d = FirstDL; d != NULL; d = d->next) {
+				if (d->pid == pid) {
+		    		d->err = WEXITSTATUS(p_stat);
+		    		break;
+				}
+	    	}
 		}
-	    }
-	}
     }
     mySignal(SIGCHLD, sig_chld);
     return;
@@ -2283,7 +2283,7 @@ static void cmd_loadfile(char *fn)
 }
 
 /* Move cursor left */
-static voidc _movL(int n)
+static void _movL(int n)
 {
     int i, m = searchKeyNum();
     if (Currentbuf->firstLine == NULL)
