@@ -10,8 +10,7 @@
 #include <stdio.h>
 #include <limits.h>
 
-static inline size_t
-z_mult_no_oflow_(size_t n, size_t size)
+static inline size_t z_mult_no_oflow_(size_t n, size_t size)
 {
 	if (size != 0 && n > ULONG_MAX / size) {
 		fprintf(stderr,
