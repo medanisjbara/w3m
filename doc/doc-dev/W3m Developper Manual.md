@@ -8,7 +8,7 @@
 3. [Installation](#installation)
 4. [Summary of the codebase](#summary-of-the-codebase)
 5. [Interpreting the issues](#interpreting-the-issues)
-6. [Other documentation:](#other-documentation:)
+6. [Other documentation](#other-documentation)
 7. [Useful Sources](#useful-sources)
 
 
@@ -39,7 +39,7 @@ On the [Old README file](/doc/doc-old/doc-en/README) they pointed out in the *Cu
 The online documents generally lack information, especially for developers who wants to contribute or use the project, these online documents that you'll find if you google w3m and look at every page generally contain information about general usage and the installation method. Those will be mentioned briefly here. But this document is meant for developers that wants to integrate their work with w3m.
 
 ## Installation
-Check the [`README.md`](/README.md) for installation instuctions.
+Check the [`README.md`](/README.md) or the [W3m User Manual](/doc/W3m%20User%20Manual.md) for installation instuctions.
 
 ## Summary of the codebase
 This section is the result of the direct reading of the code, file by file and function by function and line by line. This section will probably change a lot and may even be removed when better documentation build on it will be written.
