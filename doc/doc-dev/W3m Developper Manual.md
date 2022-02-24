@@ -51,6 +51,11 @@ This project is both simple and complicated at the same time. Therefore, my stra
 ### main.c
 The [`main.c`](/main.c) file will be reformated slightly and comments will be added to it on [my fork of the repository](https://github.com/medanisjbara/w3m) without making changes to the code functionality.
 
+#### Prerequisite
+Here's a list of prerequisites and points to some documentation about them. A file of all prerequisites to understanding the whole project will be available soon.
+* General understanding of the C language
+* Signal handling
+
 #### A list of headers and libraries used:
 
 Path headers:
@@ -81,6 +86,7 @@ Headers files:
 #### C functions defined in main.c
 There is 107 files defined in the `main.c` file, the most important of which is the main function.
 This will be an overview of these functions listed from top to bottom, and a brief description of what they do. 
+
 * `fversion` writes the version and some other information to a file, the file in this context is ether `stdout` or `stderr`. the information written by this function are 
 	* **version**
 	* **language** ether english or japanese
@@ -104,10 +110,10 @@ This will be an overview of these functions listed from top to bottom, and a bri
 		* **gopher**
 		* **ipv6**
 * `wrap_GC_warn_proc` 				*// yet to be documented* 
-* `sig_chld` 						*// yet to be documented*
+* `sig_chld` 						Child signal handling (only if SIGCHLD is defined, a part of the signal handling library)
 * `make_optional_header_string` 	*// yet to be documented*
 * `die_oom` 						*// yet to be documented*
-* `main` 							*// yet to be documented*
+* `main`							The main function, See below for a full description.
 * `keyPressEventProc` 				*// yet to be documented*
 * `pushEvent` 						*// yet to be documented*
 * `dump_source` 					*// yet to be documented*
@@ -132,7 +138,7 @@ This will be an overview of these functions listed from top to bottom, and a bri
 * `clear_mark` 						*// yet to be documented*
 * `srchcore` 						*// yet to be documented*
 * `disp_srchresult` 				*// yet to be documented*
-* `dispincsrch` 					*// yet to be documented*
+* `dispincsrch`                                        *// yet to be documented*
 * `isrch` 							*// yet to be documented*
 * `srch` 							*// yet to be documented*
 * `srch_nxtprv` 					*// yet to be documented*
@@ -176,7 +182,7 @@ This will be an overview of these functions listed from top to bottom, and a bri
 * `chkURLBuffer` 					*// yet to be documented*
 * `chkNMIDBuffer` 					*// yet to be documented*
 * `invoke_browser` 					*// yet to be documented*
-* `mouse_scroll_line` 				*// yet to be documented*
+* `mouse_scroll_line`                          *// yet to be documented*
 * `posTab` 							*// yet to be documented*
 * `do_mouse_action` 				*// yet to be documented*
 * `process_mouse` 					*// yet to be documented*
@@ -209,6 +215,7 @@ This will be an overview of these functions listed from top to bottom, and a bri
 * `stopDownload` 					*// yet to be documented*
 * `save_buffer_position` 			*// yet to be documented*
 * `resetPos` 						*// yet to be documented*
+
 
 I reformated the function definitions in the code from 
 ```C
