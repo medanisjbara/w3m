@@ -408,8 +408,8 @@ Str make_optional_header_string(char *s){
 	override_user_agent = TRUE;
     Strcat_charp(hs, ": ");
     if (*(++p)) {		/* not null header */
-	SKIP_BLANKS(p);		/* skip white spaces */
-	Strcat_charp(hs, p);
+		SKIP_BLANKS(p);		/* skip white spaces */
+		Strcat_charp(hs, p);
     }
     Strcat_charp(hs, "\r\n");
     return hs;
@@ -422,6 +422,7 @@ static void *die_oom(size_t bytes){
 
 // ******************************* THE MAIN FUNCTION ************************************** //
 int main(int argc, char **argv, char **envp){
+    /* ######### Defining ############# */
     Buffer *newbuf = NULL;
     char *p;
     int c, i;
@@ -447,8 +448,9 @@ int main(int argc, char **argv, char **envp){
 #if defined(DONT_CALL_GC_AFTER_FORK) && defined(USE_IMAGE)
     char **getimage_args = NULL;
 #endif /* defined(DONT_CALL_GC_AFTER_FORK) && defined(USE_IMAGE) */
+    /* When to do the large allocation warning, 30000 by default but can be overriten */
     if (!getenv("GC_LARGE_ALLOC_WARN_INTERVAL"))
-	set_environ("GC_LARGE_ALLOC_WARN_INTERVAL", "30000");
+		set_environ("GC_LARGE_ALLOC_WARN_INTERVAL", "30000");
     /*
     from libgc(1) man page:
     > Fully portable code should call GC_INIT from the main program before making any other GC calls. On most platforms this does nothing and the collector is initialized on first use. On a few platforms explicit initialization is necessary. And it can never hurt.
@@ -484,21 +486,21 @@ int main(int argc, char **argv, char **envp){
     CurrentPid = (int)getpid();
 #if defined(DONT_CALL_GC_AFTER_FORK) && defined(USE_IMAGE)
     if (argv[0] && *argv[0])
-	MyProgramName = argv[0];
+		MyProgramName = argv[0];
 #endif /* defined(DONT_CALL_GC_AFTER_FORK) && defined(USE_IMAGE) */
     BookmarkFile = NULL;
     config_file = NULL;
 
     {
-	char hostname[HOST_NAME_MAX + 2];
-	if (gethostname(hostname, HOST_NAME_MAX + 2) == 0) {
-	    size_t hostname_len;
-	    /* Don't use hostname if it is truncated.  */
-	    hostname[HOST_NAME_MAX + 1] = '\0';
-	    hostname_len = strlen(hostname);
-	    if (hostname_len <= HOST_NAME_MAX && hostname_len < STR_SIZE_MAX)
-		HostName = allocStr(hostname, (int)hostname_len);
-	}
+		char hostname[HOST_NAME_MAX + 2];
+		if (gethostname(hostname, HOST_NAME_MAX + 2) == 0) {
+	    	size_t hostname_len;
+	    	/* Don't use hostname if it is truncated.  */
+	    	hostname[HOST_NAME_MAX + 1] = '\0';
+	    	hostname_len = strlen(hostname);
+	    	if (hostname_len <= HOST_NAME_MAX && hostname_len < STR_SIZE_MAX)
+				HostName = allocStr(hostname, (int)hostname_len);
+		}
     }
 
     /* argument search 1 */
@@ -1318,9 +1320,9 @@ void pushEvent(int cmd, void *data){
     event->data = data;
     event->next = NULL;
     if (CurrentEvent)
-	LastEvent->next = event;
+		LastEvent->next = event;
     else
-	CurrentEvent = event;
+		CurrentEvent = event;
     LastEvent = event;
 }
 
@@ -1328,12 +1330,12 @@ static void dump_source(Buffer *buf){
     FILE *f;
     int c;
     if (buf->sourcefile == NULL)
-	return;
+		return;
     f = fopen(buf->sourcefile, "r");
     if (f == NULL)
-	return;
+		return;
     while ((c = fgetc(f)) != EOF) {
-	putchar(c);
+		putchar(c);
     }
     fclose(f);
 }
@@ -1342,9 +1344,9 @@ static void dump_head(Buffer *buf){
     TextListItem *ti;
 
     if (buf->document_header == NULL) {
-	if (w3m_dump & DUMP_EXTRA)
-	    printf("\n");
-	return;
+		if (w3m_dump & DUMP_EXTRA)
+			printf("\n");
+		return;
     }
     for (ti = buf->document_header->first; ti; ti = ti->next) {
 #ifdef USE_M17N

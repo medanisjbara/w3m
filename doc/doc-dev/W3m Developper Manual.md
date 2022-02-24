@@ -55,6 +55,8 @@ The [`main.c`](/main.c) file will be reformated slightly and comments will be ad
 Here's a list of prerequisites and points to some documentation about them. A file of all prerequisites to understanding the whole project will be available soon.
 * General understanding of the C language
 * Signal handling
+* Error handling
+* Control garbage collection using GC
 
 #### A list of headers and libraries used:
 
@@ -81,7 +83,11 @@ Headers files:
 * `"wtf.h"`		:	*// yet to be documented*
 * `"ucs.h"`		:	*// yet to be documented*
 
-
+#### Useful variables
+* `w3mFuncList` is a list of functions that get executed in w3m
+* `GlobalKeymap` is a mapping of the keys based on the keymap.
+* `CurrentEvent` is an `Event` pointer that points to the event being executed.
+* `LastEvent`  is an `Event` pointer that keeps track of the last even that got executed
 
 #### C functions defined in main.c
 There is 107 files defined in the `main.c` file, the most important of which is the main function.
@@ -110,18 +116,18 @@ This will be an overview of these functions listed from top to bottom, and a bri
 		* **gopher**
 		* **ipv6**
 * `wrap_GC_warn_proc` 				*// yet to be documented* 
-* `sig_chld` 						Child signal handling (only if SIGCHLD is defined, a part of the signal handling library)
+* `sig_chld`						Child signal handling (only if SIGCHLD is defined, a part of the signal handling library)
 * `make_optional_header_string` 	*// yet to be documented*
-* `die_oom` 						*// yet to be documented*
+* `die_oom` 						Prints out of memory error and exists
 * `main`							The main function, See below for a full description.
-* `keyPressEventProc` 				*// yet to be documented*
-* `pushEvent` 						*// yet to be documented*
-* `dump_source` 					*// yet to be documented*
+* `keyPressEventProc` 				Executes a function associated with a key
+* `pushEvent` 						Creates a new event with the command passed and assign `CurrentEvent` or the `LastEvent->next` according to the state of `CurrentEvent`
+* `dump_source` 					Writes the content of the passed buffer's source file to stdout using `putchar`, Is a part of `do_dump`
 * `dump_head` 						*// yet to be documented*
 * `dump_extra` 						*// yet to be documented*
 * `cmp_anchor_hseq` 				*// yet to be documented*
 * `do_dump` 						*// yet to be documented*
-* `pcmap` Does nothing
+* `pcmap`							Does nothing
 * `escKeyProc` 						*// yet to be documented*
 * `escdmap` 						*// yet to be documented*
 * `tmpClearBuffer` 					*// yet to be documented*
@@ -138,7 +144,7 @@ This will be an overview of these functions listed from top to bottom, and a bri
 * `clear_mark` 						*// yet to be documented*
 * `srchcore` 						*// yet to be documented*
 * `disp_srchresult` 				*// yet to be documented*
-* `dispincsrch`                                        *// yet to be documented*
+* `dispincsrch`						*// yet to be documented*
 * `isrch` 							*// yet to be documented*
 * `srch` 							*// yet to be documented*
 * `srch_nxtprv` 					*// yet to be documented*
@@ -165,10 +171,10 @@ This will be an overview of these functions listed from top to bottom, and a bri
 * `query_from_followform` 			*// yet to be documented*
 * `followForm` 						*// yet to be documented*
 * `_followForm` 					*// yet to be documented*
-* `_nextA` Go to the next anchor
-* `_prevA` 						
-* `nextX` Go to the next left/right anchor
-* `nextY` Go to the next up/down anchor
+* `_nextA`							Go to the next anchor
+* `_prevA`							Go to the pervious anchor
+* `nextX`							Go to the next left/right anchor
+* `nextY`							Go to the next up/down anchor
 * `checkBackBuffer` 				*// yet to be documented*
 * `cmd_loadURL` 					*// yet to be documented*
 * `goURL0` 							*// yet to be documented*
@@ -182,7 +188,7 @@ This will be an overview of these functions listed from top to bottom, and a bri
 * `chkURLBuffer` 					*// yet to be documented*
 * `chkNMIDBuffer` 					*// yet to be documented*
 * `invoke_browser` 					*// yet to be documented*
-* `mouse_scroll_line`                          *// yet to be documented*
+* `mouse_scroll_line`				*// yet to be documented*
 * `posTab` 							*// yet to be documented*
 * `do_mouse_action` 				*// yet to be documented*
 * `process_mouse` 					*// yet to be documented*
@@ -216,8 +222,7 @@ This will be an overview of these functions listed from top to bottom, and a bri
 * `save_buffer_position` 			*// yet to be documented*
 * `resetPos` 						*// yet to be documented*
 
-
-I reformated the function definitions in the code from 
+Note that as I was reading the code, I reformated the function definitions in the code from 
 ```C
 [static] type
 name_of_function(arguments)
@@ -385,8 +390,20 @@ As far as I understand, these are macros that are defined from [Functions](/doc/
 | `cursorTop`                          | CURSOR_TOP                         | "Move cursor to the top of the screen"                                         |
 | `cursorMiddle`                       | CURSOR_MIDDLE                      | "Move cursor to the middle of the screen"                                      |
 | `cursorBottom`                       | CURSOR_BOTTOM                      | "Move cursor to the bottom of the screen"                                      |
+
+#### The main function
+Asside from defining variables, the main function does a bunch of things that I'm hoping to document step by step here.
+* First, the main function checks for the environment variable `GC_LARGE_ALLOC_WARN_INTERVAL`, if it's not set, then it gets set to 30000 by default. This apparently is responsible for how much is the maximum memory allocation for the program.
+* Initialise gc using `GC_INIT`
+* Sets the `die_oom` as a gc die out of memory based on the version of gcc used.
+* Unsets the locale `LC_ALL` in case language info codeset and m17n multilingualization both exist. It will also be unset in case [NLS](https://gcc.gnu.org/install/configure.html) is enabled.
+* In the case of [NLS](https://gcc.gnu.org/install/configure.html) being enabled, two functions that does nothing, this check was added in 2004 based on the change log but is apparently no longer needed.
+* 
+
 #### Notes:
-The `main.c` file (and other files) contain a check for defined constants such as `DONT_CALL_GC_AFTER_FORK` and acts differently accordingly. It uses this constant and another constant named `USE_IMAGE` which if they're defined, these sections of code will be activated
+* Note that the program uses `newTextList` as a type for the `NO_proxy_domains`, `fileToDelete` and `backend_batch_commands`.
+* The `newTextList` is defined in `textlist.h`, More on it later.
+* The `main.c` file (and other files) contain a check for defined constants such as `DONT_CALL_GC_AFTER_FORK` and acts differently accordingly. It uses this constant and another constant named `USE_IMAGE` which if they're defined, these sections of code will be activated
 ```C
 ...
 	char **getimage_args = NULL;
