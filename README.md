@@ -51,7 +51,7 @@ cd w3m
 sudo make
 ```
 ## Documentation
-Since this project is (for now) all about making documentation. If you think you can help, please have a look at the [W3m Developper Manual](doc/doc-dev/W3m-Developper-Manual.md) since it is the work in progress for now to understand and document the source code and how it works.
+Since this project is (for now) all about making documentation. If you think you can help, please have a look at the [W3m Developper Manual](doc/doc-dev/W3m%20Developper%20Manual.md) since it is the work in progress for now to understand and document the source code and how it works.
 
 ## Tasks
 
