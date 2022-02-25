@@ -52,6 +52,7 @@ sudo make
 ```
 ## Documentation
 Since this project is (for now) all about making documentation. If you think you can help, please have a look at the [W3m Developper Manual](doc/doc-dev/W3m%20Developper%20Manual.md) since it is the work in progress for now to understand and document the source code and how it works.
+Check also the [W3m User Manual](/doc/W3m%20User%20Manual.md) which is designed to look like an arch wiki page and will contain the needed information for a user to get around and use the program.
 
 ## Tasks
 
