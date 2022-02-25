@@ -19,7 +19,7 @@ Becase everyone loves how amazing software becomes when there is more contributi
 * Working on the extensibility of the project will also help growing the project to the better with each update.
 * What better way to support a project except using it in another project ?
 Having a developer documentation to make the codebase understandable will save a lot of time for developers trying to make use of this project. FOSS is about the ability to do what you want with any software so that everyone can build upon the work of others, It is also about collective work of people who wants to contribute to a project, etc ..  
-But when there is poor documentation to developers, the objective becomes hard to achieve to anyone new who haven't worked on the codebase before.
+But when there is poor documentation to developers, the objective becomes hard to achieve to anyone new who haven't worked on the codebase before.  
 Also, on the [Old README file](/doc/doc-old/doc-en/README) they pointed out in the *Current problems are* section that their online manuals are poor. so someone had to do it
 ## Dependencies
 * gc
