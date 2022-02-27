@@ -21,6 +21,11 @@ Becase everyone loves how amazing software becomes when there is more contributi
 Having a developer documentation to make the codebase understandable will save a lot of time for developers trying to make use of this project. FOSS is about the ability to do what you want with any software so that everyone can build upon the work of others, It is also about collective work of people who wants to contribute to a project, etc ..  
 But when there is poor documentation to developers, the objective becomes hard to achieve to anyone new who haven't worked on the codebase before.  
 Also, on the [Old README file](/doc/doc-old/doc-en/README) they pointed out in the *Current problems are* section that their online manuals are poor. so someone had to do it
+
+## Documentation
+Since this project is (for now) all about making documentation. If you think you can help, please have a look at the [W3m Developper Manual](doc/doc-dev/W3m%20Developper%20Manual.md) since it is the work in progress for now to understand and document the source code and how it works.
+Check also the [W3m User Manual](/doc/W3m%20User%20Manual.md) which is designed to look like an arch wiki page and will contain the needed information for a user to get around and use the program.
+
 ## Dependencies
 * gc
 * gpm
@@ -50,9 +55,6 @@ cd w3m
 ./configure
 sudo make
 ```
-## Documentation
-Since this project is (for now) all about making documentation. If you think you can help, please have a look at the [W3m Developper Manual](doc/doc-dev/W3m%20Developper%20Manual.md) since it is the work in progress for now to understand and document the source code and how it works.
-Check also the [W3m User Manual](/doc/W3m%20User%20Manual.md) which is designed to look like an arch wiki page and will contain the needed information for a user to get around and use the program.
 
 ## Tasks
 
