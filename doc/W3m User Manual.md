@@ -97,3 +97,4 @@ export GC_LARGE_ALLOC_WARN_INTERVAL=30000
 * [The old documentation](/doc/doc-old/MANUAL.html)
 * [The old FAQ](/doc/doc-old/FAQ.html)
 * [Subreddit](reddit.com/r/w3m)
+* [W3M Rocks](http://w3m.rocks/) 
