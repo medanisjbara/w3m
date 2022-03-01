@@ -14,7 +14,7 @@
 ## Introduction
 This document is not the official user manual for w3m. Instead, it is the result of collected information over the internet and from the source code. This is the case for now, until the maintainers of w3m give this document a look.
 ## Motives
-*This section will be removed since it's not relavent*
+*This section will be removed since it's not relevant*  
 On the [Old README file](/doc/doc-old/doc-en/README) they pointed out in the *Current problems are* section that their online manuals are poor. Personally w3m saved me a couple of times when I had limited bandwidth or I didn't have enough money to by mobile data. And when I started reading the source code and looking online, there were a couple of things that I wished I knew when I needed them. That's why I'm creating this document.
 ## Installation
 ### Via the package manager
@@ -39,24 +39,24 @@ sudo make
 
 
 ## Basic usage
-**This section will be replaced with more**
+**This section needs more information**  
 w3m is a pager and an HTTP browser, meaning it can open files and URLs.
 ```
 usage: w3m [options] [URL or filename]
 ```
-to get general information on how to use w3m, `man w3m` or `w3m --help`.
+to get general information on how to use w3m, read the man page `man w3m` or the output of `w3m --help`.
 You can also have a look at the [old documentation](/doc/doc-old/MANUAL.html) for more information
 
 ## Tips and tricks
 ### Open homepage when no arguments are supplied
-In case of no arguments, w3m will look for the `HTTP_HOME` envirnoment variable, If `HTTP_HOME` is not set, w3m will display the help message.
+In case of no arguments, w3m will look for the `HTTP_HOME` environment variable, If `HTTP_HOME` is not set, w3m will display the help message.
 In some cases, It could be helpful to add this to your `~/.bashrc`
 ```
 export HTTP_HOME=google.com
 ```
 So that w3m will automatically launch to your search engine if no arguments were given.
 
-### Combining with mpv and watch youtube.
+### Combining with mpv and watching youtube.
 This is one of the best tricks you can use with w3m it order to make the browsing experience richer.  
 Start first by making a `keymap` file in `~/.w3m` if you haven't already. And write the following content to it.
 
@@ -80,7 +80,7 @@ You can add as many keymaps as you need, Not only for external video players lik
 
 ## Troubleshooting
 ### GC Memory allocation Warning
-This error occures mainly on termux on android but can occure on some other low end devices.
+This error occurs mainly on termux on android but can occure on some other low end devices.
 If you see an error that looks like this:
 ```
 GC Warning: Repeated allocation of very large block (appr. size 110592):
@@ -93,3 +93,4 @@ export GC_LARGE_ALLOC_WARN_INTERVAL=30000
 ## Useful sources
 * [The old documentation](/doc/doc-old/MANUAL.html)
 * [The old FAQ](/doc/doc-old/FAQ.html)
+* [Subreddit](reddit.com/r/w3m)
