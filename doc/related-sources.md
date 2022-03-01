@@ -24,6 +24,7 @@ Comming soon.
 ## Relavent related projects
 * [emacs-w3m](https://emacs-w3m.github.io/)
 * [w3mme](http://pub.ks-and-ks.ne.jp/prog/w3mmee/)
+* [w3l](https://git.sr.ht/~vdupras/w3l) W3m with way less (potentially the most helpful)
 
 ## CLI Usage message
 Although this might not seem useful, But reading the help gives you an entry point to look at the code and see what it's doing with each flag and have a feeling of what the functions in the code do.
