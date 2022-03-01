@@ -14,8 +14,11 @@ Comming soon.
 
 ## Users tips and tricks.
 * http://physino.xyz/learning/w3m/
+* https://linuxconsole.net/www.html
+* http://w3m.rocks/howto/
 
 ## Other related sources that might be useful
+* [Subreddit](reddit.com/r/w3m)
 * [Mailing list archive](https://www.mail-archive.com/w3m-dev-en@sic.med.tohoku.ac.jp/)
 * [Debian package page](https://packages.debian.org/sid/w3m)
 * [Gentoo package page](https://packages.gentoo.org/packages/www-client/w3m)
