@@ -39,7 +39,7 @@ sudo make
 
 
 ## Basic usage
-**This section needs more information**  
+*This section needs more information*  
 w3m is a pager and an HTTP browser, meaning it can open files and URLs.
 ```
 usage: w3m [options] [URL or filename]
@@ -48,6 +48,9 @@ to get general information on how to use w3m, read the man page `man w3m` or the
 You can also have a look at the [old documentation](/doc/doc-old/MANUAL.html) for more information
 
 ## Tips and tricks
+### Terminal emulators
+*This section needs more information*  
+According to [this thread](https://www.reddit.com/r/w3m/comments/pwwizm/which_terminal_emulator_are_you_using_with_w3m/) w3m image rendering is the most stable on Xterm, And [st](https://wiki.archlinux.org/title/St) (Only in the case of applying a [patch](https://st.suckless.org/patches/w3m/)
 ### Open homepage when no arguments are supplied
 In case of no arguments, w3m will look for the `HTTP_HOME` environment variable, If `HTTP_HOME` is not set, w3m will display the help message.
 In some cases, It could be helpful to add this to your `~/.bashrc`
@@ -61,9 +64,9 @@ This is one of the best tricks you can use with w3m it order to make the browsin
 Start first by making a `keymap` file in `~/.w3m` if you haven't already. And write the following content to it.
 
 ```
-keymap Key_Combination EXTERN_LINK "(mpv --player-operation-mode=pseudo-gui --no-terminal %s &)"
+keymap <key> EXTERN_LINK "(mpv --player-operation-mode=pseudo-gui --no-terminal %s &)"
 ```
-Where *Key_Combination* represents the key combination of your choice. You can add as many lines like these as you like.  
+Where *<key>* represents the key combination of your choice. You can add as many lines like these as you like.  
 And combined with the `ytdl` implimentation of mpv, you can add special options to mpv to be able to customize the video player according to your needs.
 #### Example:
 ```
