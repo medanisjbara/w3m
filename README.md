@@ -72,7 +72,8 @@ sudo make
 * The actual README has been moved to README.old
 
 ## DISCLAMER
-This is no where close to being professional work (for now).
+~This is no where close to being professional work.~
+ I'm archiving this repository due to it's inconvenience. Check the new [w3m-wiki](https://github.com/medanisjbara/w3m-wiki) for documentation.
 
 ## To-Do
 * Add Installation instructions.
